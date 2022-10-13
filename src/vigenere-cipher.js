@@ -19,15 +19,67 @@ const { NotImplementedError } = require('../extensions/index.js');
  * reverseMachine.decrypt('AEIHQX SX DLLU!', 'alphonse') => '!NWAD TA KCATTA'
  * 
  */
-class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+ class VigenereCipheringMachine {
+
+  constructor(value){
+    if (value === false) {this.type = 'reverse'}
+    else {this.type = 'direct'}
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  
+  encrypt(string, key) {
+
+    if(!string || !key){ throw Error('Incorrect arguments!'); }
+    
+    string = string.toUpperCase();
+    key = key.toUpperCase();
+
+    let result = '';
+    let key_symbol_number = 0
+    
+    for (let i = 0; i < string.length; i++) {
+
+      if (string[i].charCodeAt(0) < 65 || string[i].charCodeAt(0) > 90) { 
+        result += string[i]
+      } else {
+        let letter_ascii_value = key[key_symbol_number].charCodeAt(0) + string[i].charCodeAt(0) - 65;
+        if (letter_ascii_value > 90) { letter_ascii_value -= 26;}
+
+        result += String.fromCharCode(letter_ascii_value)
+        
+        console.log(string[i], ' - ', key[key_symbol_number], ' - ', letter_ascii_value, ' - ', result)
+        key_symbol_number++;
+        if (key_symbol_number === key.length) {key_symbol_number = 0}
+      }
+    }    
+    return this.type === 'direct' ? result : result.split("").reverse().join("");
   }
+  decrypt(string, key) {
+    
+    if(!string || !key){ throw Error('Incorrect arguments!'); }
+
+    string = string.toUpperCase();
+    key = key.toUpperCase();
+
+    let result = '';
+    let key_symbol_number = 0
+    
+    for (let i = 0; i < string.length; i++) {
+
+      if (string[i].charCodeAt(0) < 65 || string[i].charCodeAt(0) > 90) { 
+        result += string[i]
+      } else {
+        let letter_ascii_value = string[i].charCodeAt(0) - key[key_symbol_number].charCodeAt(0) + 65 ;
+        if (letter_ascii_value < 65) { letter_ascii_value += 26;}
+
+        result += String.fromCharCode(letter_ascii_value)
+        
+        console.log(string[i], ' - ', key[key_symbol_number], ' - ', letter_ascii_value, ' - ', result)
+        key_symbol_number++;
+        if (key_symbol_number === key.length) {key_symbol_number = 0}
+      }
+    }    
+    return this.type === 'direct' ? result : result.split("").reverse().join("");
+  } 
 }
 
 module.exports = {
